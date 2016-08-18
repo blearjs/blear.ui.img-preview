@@ -1,0 +1,41 @@
+{
+  "name": "blear.ui.img-preview",
+  "version": "1.0.0",
+  "description": "图片预览 UI 组件",
+  "scripts": {
+    "live": "browser-sync start --config bs-config.js"
+  },
+  "preferGlobal": false,
+  "bin": {},
+  "engines": {
+    "node": ">=1.0.0",
+    "iojs": ">=1.0.0"
+  },
+  "main": "src/index.js",
+  "keywords": [
+    "blear",
+    "ui",
+    "img",
+    "preview",
+    "cloudcome",
+    "ydr.me"
+  ],
+  "author": {
+    "name": "cloudcome",
+    "email": "cloudcome@163.com",
+    "url": "http://ydr.me"
+  },
+  "contributors": [],
+  "homepage": "https://github.com/blearjs/blear.ui.img-preview",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blearjs/blear.ui.img-preview"
+  },
+  "bugs": {
+    "url": "https://github.com/blearjs/blear.ui.img-preview/issues"
+  },
+  "dependencies": {},
+  "peerDependencies": {},
+  "devDependencies": {},
+  "license": "MIT"
+}
