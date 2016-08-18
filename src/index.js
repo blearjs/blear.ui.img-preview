@@ -7,17 +7,16 @@
 'use strict';
 
 
-var compatible = require('blear.utils.compatible');
-var object = require('blear.utils.object');
-var loader = require('blear.utils.loader');
-var fun = require('blear.utils.function');
-var selector = require('blear.core.selector');
+var compatible =   require('blear.utils.compatible');
+var object =       require('blear.utils.object');
+var loader =       require('blear.utils.loader');
+var fun =          require('blear.utils.function');
+var selector =     require('blear.core.selector');
 var modification = require('blear.core.modification');
-var UI = require('blear.ui');
+var UI =           require('blear.ui');
 
 var w = window;
 var URL = w[compatible.js('URL', w)];
-var URL = null;
 var reImage = /^image\//;
 var defaults = {
     /**
