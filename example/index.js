@@ -13,13 +13,24 @@ var ImgPreview = require('../src/index');
 var ip = window.ip = new ImgPreview({
     el: '#demo',
     onUpload: function (fileInputEl, done) {
-        done(null, 'http://image.tianjimedia.com/uploadImages/2015/083/30/VVJ04M7P71W2.jpg');
+        setTimeout(function () {
+            done(null, 'http://image.tianjimedia.com/uploadImages/2015/083/30/VVJ04M7P71W2.jpg');
+        }, 1000);
     }
 });
 var fileInputEl = document.querySelector('#file');
+var statusEl = document.querySelector('#status');
 
 fileInputEl.onchange = function () {
     ip.preview(fileInputEl);
 };
+
+ip.on('beforeLoading', function () {
+    statusEl.innerHTML = '加载中...';
+});
+
+ip.on('afterLoading', function () {
+    statusEl.innerHTML = '加载完毕';
+});
 
 

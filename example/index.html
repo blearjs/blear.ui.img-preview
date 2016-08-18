@@ -19,6 +19,11 @@
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
     <title>index.html</title>
     <style>
+        #status {
+            font-size: 18px;
+            color: #007aff;
+        }
+
         #demo {
             border: 4px solid #fc8c84;
         }
@@ -29,11 +34,12 @@
 <h1>example</h1>
 <input type="file" name="file" id="file">
 
+<p id="status">状态</p>
 <div id="demo">预览容器</div>
 
 <script src="/node_modules/coolie.js/coolie.js"
-data-config="/example/coolie-config.js"
-data-main="index.js"></script>
+        data-config="/example/coolie-config.js"
+        data-main="index.js"></script>
 
 </body>
 </html>
