@@ -61,24 +61,6 @@ var defaults = {
     maxHeight: 800,
 
     /**
-     * 打开动画
-     * @type Function|Undefined
-     */
-    openAnimation: undefined,
-
-    /**
-     * 尺寸变化动画
-     * @type Function|Undefined
-     */
-    resizeAnimation: undefined,
-
-    /**
-     * 关闭动画
-     * @type Function|Undefined
-     */
-    closeAnimation: undefined,
-
-    /**
      * 上传回调
      * @type Function
      */
@@ -95,9 +77,25 @@ var ImgPreview = UI.extend({
         options = the[_options] = object.assign({}, defaults, options);
         the[_parentEl] = selector.query(options.el)[0];
         ImgPreview.parent(the);
+        the[_initNode]();
     },
 
 
+    /**
+     * 获取 img 节点
+     * @returns {*}
+     */
+    getImgEl: function () {
+        return this[_imgEl];
+    },
+
+
+    /**
+     * 预览
+     * @param fileInputEl {Object} 文件上传输入框
+     * @param [callback] {Function} 预览完毕回调
+     * @returns {ImgPreview}
+     */
     preview: function (fileInputEl, callback) {
         var the = this;
         var options = the[_options];
@@ -152,8 +150,28 @@ var _options = ImgPreview.sole();
 var _parentEl = ImgPreview.sole();
 var _imgEl = ImgPreview.sole();
 var _preview = ImgPreview.sole();
+var _initNode = ImgPreview.sole();
 var pro = ImgPreview.prototype;
 
+// 初始化节点
+pro[_initNode] = function () {
+    var the = this;
+    var options = the[_options];
+
+    the[_imgEl] = modification.create('img', {
+        style: {
+            width: options.width,
+            height: options.height,
+            minWidth: options.minWidth,
+            minHeight: options.minHeight,
+            maxWidth: options.maxWidth,
+            maxHeight: options.maxHeight
+        }
+    });
+    modification.insert(the[_imgEl], the[_parentEl]);
+};
+
+// 预览
 pro[_preview] = function (url, callback) {
     var the = this;
     var options = the[_options];
@@ -162,20 +180,6 @@ pro[_preview] = function (url, callback) {
         if (err) {
             the.emit('afterLoading');
             return callback(err);
-        }
-
-        if (!the[_imgEl]) {
-            the[_imgEl] = modification.create('img', {
-                style: {
-                    width: options.width,
-                    height: options.height,
-                    minWidth: options.minWidth,
-                    minHeight: options.minHeight,
-                    maxWidth: options.maxWidth,
-                    maxHeight: options.maxHeight
-                }
-            });
-            modification.insert(the[_imgEl], the[_parentEl]);
         }
 
         the[_imgEl].src = img.src;
