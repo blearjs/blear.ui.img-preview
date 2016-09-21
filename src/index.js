@@ -25,6 +25,12 @@ var defaults = {
     el: null,
 
     /**
+     * 图片扩展名，使用英文逗号分隔开
+     * @type String
+     */
+    extension: '.png,.jpg,.jpeg,.gif,.bmp',
+
+    /**
      * 预览的宽度
      * @type String|Number
      */
@@ -75,6 +81,7 @@ var ImgPreview = UI.extend({
         var the = this;
 
         options = the[_options] = object.assign({}, defaults, options);
+        the[_reExtension] = new RegExp('\\.(' + options.extension.replace(/,/g, '|').replace(/\./g, '') + ')$', 'i');
         the[_parentEl] = selector.query(options.el)[0];
         ImgPreview.parent(the);
         the[_initNode]();
@@ -99,7 +106,25 @@ var ImgPreview = UI.extend({
     preview: function (fileInputEl, callback) {
         var the = this;
         var options = the[_options];
+        var value = fileInputEl.value;
+
         callback = fun.noop(callback);
+
+        if (!value) {
+            err = new Error('文件不存在');
+            err.type = 'empty';
+            the.emit('error', err);
+            callback(err);
+            return the;
+        }
+
+        if (!the[_reExtension].test(value)) {
+            err = new Error('文件类型不是图片');
+            err.type = 'type';
+            the.emit('error', err);
+            callback(err);
+            return the;
+        }
 
         if (!URL) {
             the.emit('beforeLoading');
@@ -109,6 +134,7 @@ var ImgPreview = UI.extend({
 
                 if (err) {
                     the.emit('afterLoading');
+                    the.emit('error', err);
                     return callback(err);
                 }
 
@@ -120,6 +146,7 @@ var ImgPreview = UI.extend({
         if (!fileInputEl.files) {
             err = new Error('文件不存在');
             err.type = 'empty';
+            the.emit('error', err);
             callback(err);
             return the;
         }
@@ -130,6 +157,7 @@ var ImgPreview = UI.extend({
         if (!file) {
             err = new Error('文件为空');
             err.type = 'empty';
+            the.emit('error', err);
             callback(err);
             return the;
         }
@@ -137,6 +165,7 @@ var ImgPreview = UI.extend({
         if (!reImage.test(file.type)) {
             err = new Error('文件类型不是图片');
             err.type = 'type';
+            the.emit('error', err);
             callback(err);
             return the;
         }
@@ -151,6 +180,7 @@ var _parentEl = ImgPreview.sole();
 var _imgEl = ImgPreview.sole();
 var _preview = ImgPreview.sole();
 var _initNode = ImgPreview.sole();
+var _reExtension = ImgPreview.sole();
 var pro = ImgPreview.prototype;
 
 // 初始化节点
@@ -179,12 +209,14 @@ pro[_preview] = function (url, callback) {
     loader.img(url, function (err, img) {
         if (err) {
             the.emit('afterLoading');
+            the.emit('error', err);
             return callback(err);
         }
 
         the[_imgEl].src = img.src;
         callback(null, the[_imgEl]);
         the.emit('afterLoading');
+        the.emit('success', the[_imgEl]);
     });
 };
 

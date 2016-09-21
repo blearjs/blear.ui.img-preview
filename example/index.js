@@ -25,6 +25,10 @@ fileInputEl.onchange = function () {
     ip.preview(fileInputEl);
 };
 
+ip.on('error', function (err) {
+    statusEl.innerHTML = err.message;
+});
+
 ip.on('beforeLoading', function () {
     statusEl.innerHTML = '加载中...';
 });
