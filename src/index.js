@@ -173,7 +173,8 @@ pro[_initNode] = function () {
             maxWidth: 'none',
             maxHeight: 'none',
             border: 0,
-            boxShadow: 'none'
+            boxShadow: 'none',
+            background: '#fff'
         }
     });
     modification.insert(the[_imgEl], the[_parentEl]);
