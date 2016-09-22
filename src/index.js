@@ -13,6 +13,7 @@ var loader = require('blear.utils.loader');
 var fun = require('blear.utils.function');
 var selector = require('blear.core.selector');
 var modification = require('blear.core.modification');
+var attribute = require('blear.core.attribute');
 var UI = require('blear.ui');
 
 var w = window;
@@ -31,38 +32,14 @@ var defaults = {
     extension: '.png,.jpg,.jpeg,.gif,.bmp',
 
     /**
-     * 预览的宽度
-     * @type String|Number
-     */
-    width: 'auto',
-
-    /**
-     * 预览的高度
-     * @type String|Number
-     */
-    height: 'auto',
-
-    /**
-     * 预览的最小宽度
-     * @type String|Number
-     */
-    minWidth: 800,
-
-    /**
-     * 预览的最小高度
-     * @type String|Number
-     */
-    minHeight: 'auto',
-
-    /**
      * 预览的最大宽度
-     * @type String|Number
+     * @type Number
      */
     maxWidth: 1100,
 
     /**
      * 预览的最大高度
-     * @type String|Number
+     * @type Number
      */
     maxHeight: 800,
 
@@ -190,12 +167,13 @@ pro[_initNode] = function () {
 
     the[_imgEl] = modification.create('img', {
         style: {
-            width: options.width,
-            height: options.height,
-            minWidth: options.minWidth,
-            minHeight: options.minHeight,
-            maxWidth: options.maxWidth,
-            maxHeight: options.maxHeight
+            display: 'none',
+            minWidth: 'auto',
+            minHeight: 'auto',
+            maxWidth: 'none',
+            maxHeight: 'none',
+            border: 0,
+            boxShadow: 'none'
         }
     });
     modification.insert(the[_imgEl], the[_parentEl]);
@@ -206,14 +184,36 @@ pro[_preview] = function (url, callback) {
     var the = this;
     var options = the[_options];
 
-    loader.img(url, function (err, img) {
+    loader.img(url, function (err, imgEl) {
         if (err) {
             the.emit('afterLoading');
             the.emit('error', err);
             return callback(err);
         }
 
-        the[_imgEl].src = img.src;
+        var imgWidth = imgEl.width;
+        var imgHeight = imgEl.height;
+        var maxWidth = options.maxWidth;
+        var maxHeight = options.maxHeight;
+        var maxRatio = maxWidth / maxHeight;
+        var realRatio = imgWidth / imgHeight;
+
+        if (maxRatio > realRatio) {
+            imgHeight = maxHeight;
+            imgWidth = imgHeight * realRatio;
+        } else {
+            imgWidth = maxWidth;
+            imgHeight = imgWidth / realRatio;
+        }
+
+        the[_imgEl].width = imgWidth;
+        the[_imgEl].height = imgHeight;
+        attribute.style(the[_imgEl], {
+            display: 'inline-block',
+            width: imgWidth,
+            height: imgHeight
+        });
+        the[_imgEl].src = imgEl.src;
         callback(null, the[_imgEl]);
         the.emit('afterLoading');
         the.emit('success', the[_imgEl]);
