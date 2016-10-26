@@ -103,7 +103,7 @@ var ImgPreview = UI.extend({
             return the;
         }
 
-        if (!URL) {
+        if (!URL || the.emit('beforePreview', fileInputEl) === false) {
             the.emit('beforeLoading');
             the.emit('beforeUpload');
             options.onUpload(fileInputEl, function (err, url) {
@@ -149,6 +149,17 @@ var ImgPreview = UI.extend({
 
         the.emit('beforeLoading');
         the[_preview](URL.createObjectURL(file), callback);
+        the.emit('afterPreview');
+        return the;
+    },
+
+    /**
+     * 重置为初始状态
+     * @returns {ImgPreview}
+     */
+    reset: function () {
+        var the = this;
+        the[_imgEl].src = '';
         return the;
     }
 });
@@ -159,6 +170,7 @@ var _preview = ImgPreview.sole();
 var _initNode = ImgPreview.sole();
 var _reExtension = ImgPreview.sole();
 var pro = ImgPreview.prototype;
+
 
 // 初始化节点
 pro[_initNode] = function () {
