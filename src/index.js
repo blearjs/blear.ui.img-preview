@@ -103,7 +103,7 @@ var ImgPreview = UI.extend({
             return the;
         }
 
-        if (!URL || the.emit('beforePreview', fileInputEl) === false) {
+        if (!URL || the.emit('localPreview', fileInputEl) === false) {
             the.emit('beforeLoading');
             the.emit('beforeUpload');
             options.onUpload(fileInputEl, function (err, url) {
@@ -149,7 +149,6 @@ var ImgPreview = UI.extend({
 
         the.emit('beforeLoading');
         the[_preview](URL.createObjectURL(file), callback);
-        the.emit('afterPreview');
         return the;
     },
 
