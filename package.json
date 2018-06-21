@@ -45,6 +45,8 @@
     "blear.ui": "1.x"
   },
   "peerDependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "coolie.js": "^2.2.3"
+  },
   "license": "MIT"
 }
