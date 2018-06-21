@@ -2,6 +2,7 @@
  * blear.ui.img-preview
  * @author ydr.me
  * @create 2016年06月04日14:09:36
+ * @update 2018年06月21日16:47:27
  */
 
 'use strict';
@@ -41,15 +42,7 @@ var defaults = {
      * 预览的最大高度
      * @type Number
      */
-    maxHeight: 800,
-
-    /**
-     * 上传回调
-     * @type Function
-     */
-    onUpload: function (fileInputEl, done) {
-        done(null, 'url');
-    }
+    maxHeight: 800
 };
 
 var ImgPreview = UI.extend({
@@ -64,15 +57,13 @@ var ImgPreview = UI.extend({
         the[_initNode]();
     },
 
-
     /**
      * 获取 img 节点
      * @returns {*}
      */
-    getImgEl: function () {
+    getImageEl: function () {
         return this[_imgEl];
     },
-
 
     /**
      * 预览
@@ -85,7 +76,7 @@ var ImgPreview = UI.extend({
         var options = the[_options];
         var value = fileInputEl.value;
 
-        callback = fun.noop(callback);
+        callback = fun.ensure(callback);
 
         if (!value) {
             err = new Error('文件不存在');
@@ -100,23 +91,6 @@ var ImgPreview = UI.extend({
             err.type = 'type';
             the.emit('error', err);
             callback(err);
-            return the;
-        }
-
-        if (!URL || the.emit('localPreview', fileInputEl) === false) {
-            the.emit('beforeLoading');
-            the.emit('beforeUpload');
-            options.onUpload(fileInputEl, function (err, url) {
-                the.emit('afterUpload');
-
-                if (err) {
-                    the.emit('afterLoading');
-                    the.emit('error', err);
-                    return callback(err);
-                }
-
-                the[_preview](url, callback);
-            });
             return the;
         }
 
