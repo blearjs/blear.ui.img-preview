@@ -1,6 +1,6 @@
 {
   "name": "blear.ui.img-preview",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "description": "图片预览 UI 组件",
   "scripts": {
     "live": "browser-sync start --config bs-config.js"
