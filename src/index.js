@@ -54,6 +54,8 @@ var ImgPreview = UI.extend({
         the[_reExtension] = new RegExp('\\.(' + options.extension.replace(/,/g, '|').replace(/\./g, '') + ')$', 'i');
         the[_parentEl] = selector.query(options.el)[0];
         ImgPreview.parent(the);
+        the[_rotation] = 0;
+        the[_scale] = 1;
         the[_initNode]();
     },
 
@@ -63,6 +65,30 @@ var ImgPreview = UI.extend({
      */
     getImageEl: function () {
         return this[_imgEl];
+    },
+
+    /**
+     * 旋转角度
+     * @param rotation
+     * @returns {ImgPreview}
+     */
+    rotate: function (rotation) {
+        var the = this;
+        the[_rotation] += rotation;
+        the[_transform]();
+        return the;
+    },
+
+    /**
+     * 缩放倍数
+     * @param scale
+     * @returns {ImgPreview}
+     */
+    scale: function (scale) {
+        var the = this;
+        the[_scale] *= scale;
+        the[_transform]();
+        return the;
     },
 
     /**
@@ -76,6 +102,9 @@ var ImgPreview = UI.extend({
         var options = the[_options];
         var value = fileInputEl.value;
 
+        the[_rotation] = 0;
+        the[_scale] = 1;
+        the[_transform]();
         callback = fun.ensure(callback);
 
         if (!value) {
@@ -142,11 +171,14 @@ var _imgEl = ImgPreview.sole();
 var _preview = ImgPreview.sole();
 var _initNode = ImgPreview.sole();
 var _reExtension = ImgPreview.sole();
-var pro = ImgPreview.prototype;
+var _rotation = ImgPreview.sole();
+var _scale = ImgPreview.sole();
+var _transform = ImgPreview.sole();
+var proto = ImgPreview.prototype;
 
 
 // 初始化节点
-pro[_initNode] = function () {
+proto[_initNode] = function () {
     var the = this;
     var options = the[_options];
 
@@ -166,7 +198,7 @@ pro[_initNode] = function () {
 };
 
 // 预览
-pro[_preview] = function (url, callback) {
+proto[_preview] = function (url, callback) {
     var the = this;
     var options = the[_options];
 
@@ -204,6 +236,16 @@ pro[_preview] = function (url, callback) {
         the.emit('afterLoading');
         the.emit('success', the[_imgEl]);
     });
+};
+
+// 变换
+proto[_transform] = function () {
+    var the = this;
+
+    attribute.style(the[_imgEl], 'transform', {
+        rotate: the[_rotation],
+        scale: the[_scale]
+    })
 };
 
 

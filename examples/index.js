@@ -37,4 +37,16 @@ ip.on('afterLoading', function () {
     statusEl.innerHTML = '加载完毕';
 });
 
+document.querySelector('#rotate').onclick = function () {
+    ip.rotate(90);
+};
+
+document.querySelector('#scale1').onclick = function () {
+    ip.scale(1.1);
+};
+
+document.querySelector('#scale2').onclick = function () {
+    ip.scale(0.9);
+};
+
 
