@@ -181,15 +181,19 @@ var ImgPreview = UI.extend({
         return the;
     }
 });
-var _options = ImgPreview.sole();
-var _parentEl = ImgPreview.sole();
-var _imgEl = ImgPreview.sole();
-var _preview = ImgPreview.sole();
-var _initNode = ImgPreview.sole();
-var _reExtension = ImgPreview.sole();
-var _rotation = ImgPreview.sole();
-var _scale = ImgPreview.sole();
-var _transform = ImgPreview.sole();
+var sole = ImgPreview.sole;
+var _options = sole();
+var _parentEl = sole();
+var _imgEl = sole();
+var _preview = sole();
+var _initNode = sole();
+var _reExtension = sole();
+var _rotation = sole();
+var _scale = sole();
+var _transform = sole();
+var _imageOriginalWidth = sole();
+var _imageOriginalHeight = sole();
+var _adapteSize = sole();
 var proto = ImgPreview.prototype;
 
 
@@ -216,7 +220,6 @@ proto[_initNode] = function () {
 // 预览
 proto[_preview] = function (url, callback) {
     var the = this;
-    var options = the[_options];
 
     loader.img(url, function (err, imgEl) {
         if (err) {
@@ -225,32 +228,40 @@ proto[_preview] = function (url, callback) {
             return callback(err);
         }
 
-        var imgWidth = imgEl.width;
-        var imgHeight = imgEl.height;
-        var maxWidth = options.maxWidth;
-        var maxHeight = options.maxHeight;
-        var maxRatio = maxWidth / maxHeight;
-        var realRatio = imgWidth / imgHeight;
-
-        if (maxRatio > realRatio) {
-            imgHeight = maxHeight;
-            imgWidth = imgHeight * realRatio;
-        } else {
-            imgWidth = maxWidth;
-            imgHeight = imgWidth / realRatio;
-        }
-
-        the[_imgEl].width = imgWidth;
-        the[_imgEl].height = imgHeight;
-        attribute.style(the[_imgEl], {
-            display: 'inline-block',
-            width: imgWidth,
-            height: imgHeight
-        });
+        the[_imageOriginalWidth] = imgEl.width;
+        the[_imageOriginalHeight] = imgEl.height;
+        the[_adapteSize]();
         the[_imgEl].src = imgEl.src;
-        callback(null, the[_imgEl]);
         the.emit('afterLoading');
+        callback(null, the[_imgEl]);
         the.emit('success', the[_imgEl]);
+    });
+};
+
+proto[_adapteSize] = function () {
+    var the = this;
+    var options = the[_options];
+    var imgWidth = the[_imageOriginalWidth];
+    var imgHeight = the[_imageOriginalHeight];
+    var maxWidth = options.maxWidth;
+    var maxHeight = options.maxHeight;
+    var maxRatio = maxWidth / maxHeight;
+    var realRatio = imgWidth / imgHeight;
+
+    if (maxRatio > realRatio) {
+        imgHeight = maxHeight;
+        imgWidth = imgHeight * realRatio;
+    } else {
+        imgWidth = maxWidth;
+        imgHeight = imgWidth / realRatio;
+    }
+
+    the[_imgEl].width = imgWidth;
+    the[_imgEl].height = imgHeight;
+    attribute.style(the[_imgEl], {
+        display: 'inline-block',
+        width: imgWidth,
+        height: imgHeight
     });
 };
 
@@ -258,6 +269,7 @@ proto[_preview] = function (url, callback) {
 proto[_transform] = function () {
     var the = this;
 
+    the[_rotation] = the[_rotation] % 360;
     attribute.style(the[_imgEl], 'transform', {
         rotate: the[_rotation],
         scale: the[_scale]
