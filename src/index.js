@@ -75,7 +75,9 @@ var ImgPreview = UI.extend({
     rotate: function (rotation) {
         var the = this;
         the[_rotation] += rotation;
+        the[_rotation] %= 360;
         the[_transform]();
+        the[_adapteSize]();
         return the;
     },
 
@@ -96,6 +98,7 @@ var ImgPreview = UI.extend({
         var the = this;
         the[_scale] *= scale;
         the[_transform]();
+        the[_adapteSize]();
         return the;
     },
 
@@ -238,30 +241,40 @@ proto[_preview] = function (url, callback) {
     });
 };
 
+/**
+ * 尺寸适配
+ */
 proto[_adapteSize] = function () {
     var the = this;
     var options = the[_options];
-    var imgWidth = the[_imageOriginalWidth];
-    var imgHeight = the[_imageOriginalHeight];
-    var maxWidth = options.maxWidth;
-    var maxHeight = options.maxHeight;
+    var vertical = the[_rotation] === 90 || the[_rotation] === 270;
+    var imgWidth = vertical ? the[_imageOriginalHeight] : the[_imageOriginalWidth];
+    var imgHeight = vertical ? the[_imageOriginalWidth] : the[_imageOriginalHeight];
+    var optMaxWidth = options.maxWidth;
+    var optMaxHeight = options.maxHeight;
+    var maxWidth = vertical ? optMaxHeight : optMaxWidth;
+    var maxHeight = vertical ? optMaxWidth : optMaxHeight;
     var maxRatio = maxWidth / maxHeight;
     var realRatio = imgWidth / imgHeight;
+    var reference1;
+    var reference2;
 
     if (maxRatio > realRatio) {
-        imgHeight = maxHeight;
+        reference1 = vertical ? maxWidth : maxHeight;
+        imgHeight = reference1;
         imgWidth = imgHeight * realRatio;
     } else {
-        imgWidth = maxWidth;
+        reference1 = vertical ? maxHeight : maxWidth;
+        imgWidth = reference1;
         imgHeight = imgWidth / realRatio;
     }
 
-    the[_imgEl].width = imgWidth;
-    the[_imgEl].height = imgHeight;
+    the[_imgEl].width = vertical ? imgHeight : imgWidth;
+    the[_imgEl].height = vertical ? imgWidth : imgHeight;
     attribute.style(the[_imgEl], {
         display: 'inline-block',
-        width: imgWidth,
-        height: imgHeight
+        width: vertical ? imgHeight : imgWidth,
+        height: vertical ? imgWidth : imgHeight
     });
 };
 
@@ -269,7 +282,6 @@ proto[_adapteSize] = function () {
 proto[_transform] = function () {
     var the = this;
 
-    the[_rotation] = the[_rotation] % 360;
     attribute.style(the[_imgEl], 'transform', {
         rotate: the[_rotation],
         scale: the[_scale]

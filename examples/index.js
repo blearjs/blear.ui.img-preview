@@ -13,7 +13,7 @@ var ImgPreview = require('../src/index');
 var ip = window.ip = new ImgPreview({
     el: '#demo',
     maxWidth: 500,
-    maxHeight: 500,
+    maxHeight: 400,
     onUpload: function (fileInputEl, done) {
         setTimeout(function () {
             done(null, 'http://image.tianjimedia.com/uploadImages/2015/083/30/VVJ04M7P71W2.jpg');
