@@ -69,7 +69,7 @@ var ImgPreview = UI.extend({
 
     /**
      * 旋转角度
-     * @param rotation
+     * @param rotation {Number} 角度
      * @returns {ImgPreview}
      */
     rotate: function (rotation) {
@@ -80,8 +80,16 @@ var ImgPreview = UI.extend({
     },
 
     /**
+     * 获取选择角度
+     * @returns {Number}
+     */
+    getRotation: function () {
+        return this[_rotation];
+    },
+
+    /**
      * 缩放倍数
-     * @param scale
+     * @param scale {Number} 比例
      * @returns {ImgPreview}
      */
     scale: function (scale) {
@@ -89,6 +97,14 @@ var ImgPreview = UI.extend({
         the[_scale] *= scale;
         the[_transform]();
         return the;
+    },
+
+    /**
+     * 获取缩放比例
+     * @returns {Number}
+     */
+    getScale: function () {
+        return this[_scale];
     },
 
     /**
