@@ -252,20 +252,16 @@ proto[_adapteSize] = function () {
     var imgHeight = vertical ? the[_imageOriginalWidth] : the[_imageOriginalHeight];
     var optMaxWidth = options.maxWidth;
     var optMaxHeight = options.maxHeight;
-    var maxWidth = vertical ? optMaxHeight : optMaxWidth;
-    var maxHeight = vertical ? optMaxWidth : optMaxHeight;
+    var maxWidth = optMaxWidth;
+    var maxHeight = optMaxHeight;
     var maxRatio = maxWidth / maxHeight;
     var realRatio = imgWidth / imgHeight;
-    var reference1;
-    var reference2;
 
     if (maxRatio > realRatio) {
-        reference1 = vertical ? maxWidth : maxHeight;
-        imgHeight = reference1;
+        imgHeight = maxHeight;
         imgWidth = imgHeight * realRatio;
     } else {
-        reference1 = vertical ? maxHeight : maxWidth;
-        imgWidth = reference1;
+        imgWidth = maxWidth;
         imgHeight = imgWidth / realRatio;
     }
 
